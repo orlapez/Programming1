@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Veterinary.Shared.Entities
 {
-    public  class Pet
+    public class Pet
     {
 
 
@@ -48,16 +48,17 @@ namespace Veterinary.Shared.Entities
 
 
         //Recibe foránea de PetType
-        public PetType PetType { get; set; }
+        public PetType PetTypes { get; set; }
 
         //Recibe foránea de Owner 
 
-        public Owner Owner { get; set; }
+        public Owner Owners { get; set; }
 
 
         //Envía llave foránea
-        public ICollection<History> History { get; set; }
+        public ICollection<History> Histories { get; set; }
 
+        public ICollection<Agenda> Agendas { get; set; }
 
     }
 }

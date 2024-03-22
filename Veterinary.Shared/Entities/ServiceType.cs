@@ -21,6 +21,7 @@ namespace Veterinary.Shared.Entities
 
 
 
+        public ICollection<History> Histories { get; set; }
 
 
     }

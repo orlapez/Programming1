@@ -56,6 +56,7 @@ namespace Veterinary.Shared.Entities
 
         public string FullWithDocument => $"{FirstName}{LastName}-{Document}";
 
+        public ICollection<Agenda> Agendas { get; set; }
 
 
     }

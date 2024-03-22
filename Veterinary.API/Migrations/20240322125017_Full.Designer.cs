@@ -12,8 +12,8 @@ using Veterinary.API.Data;
 namespace Veterinary.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240320125613_EntitiesFull")]
-    partial class EntitiesFull
+    [Migration("20240322125017_Full")]
+    partial class Full
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,38 @@ namespace Veterinary.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Veterinary.Shared.Entities.Agenda", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("OwnersId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PetsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnersId");
+
+                    b.HasIndex("PetsId");
+
+                    b.ToTable("Agenda");
+                });
 
             modelBuilder.Entity("Veterinary.Shared.Entities.History", b =>
                 {
@@ -47,14 +79,14 @@ namespace Veterinary.API.Migrations
                     b.Property<string>("Remarks")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ServiceTypeId")
+                    b.Property<int?>("ServiceTypesId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PetsId");
 
-                    b.HasIndex("ServiceTypeId");
+                    b.HasIndex("ServiceTypesId");
 
                     b.ToTable("Histories");
                 });
@@ -126,10 +158,10 @@ namespace Veterinary.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int?>("OwnersId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PetTypeId")
+                    b.Property<int?>("PetTypesId")
                         .HasColumnType("int");
 
                     b.Property<string>("Race")
@@ -142,9 +174,9 @@ namespace Veterinary.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("OwnersId");
 
-                    b.HasIndex("PetTypeId");
+                    b.HasIndex("PetTypesId");
 
                     b.ToTable("Pets");
                 });
@@ -185,39 +217,66 @@ namespace Veterinary.API.Migrations
                     b.ToTable("ServiceTypes");
                 });
 
+            modelBuilder.Entity("Veterinary.Shared.Entities.Agenda", b =>
+                {
+                    b.HasOne("Veterinary.Shared.Entities.Owner", "Owners")
+                        .WithMany("Agendas")
+                        .HasForeignKey("OwnersId");
+
+                    b.HasOne("Veterinary.Shared.Entities.Pet", "Pets")
+                        .WithMany("Agendas")
+                        .HasForeignKey("PetsId");
+
+                    b.Navigation("Owners");
+
+                    b.Navigation("Pets");
+                });
+
             modelBuilder.Entity("Veterinary.Shared.Entities.History", b =>
                 {
                     b.HasOne("Veterinary.Shared.Entities.Pet", "Pets")
-                        .WithMany("History")
+                        .WithMany("Histories")
                         .HasForeignKey("PetsId");
 
-                    b.HasOne("Veterinary.Shared.Entities.ServiceType", "ServiceType")
-                        .WithMany()
-                        .HasForeignKey("ServiceTypeId");
+                    b.HasOne("Veterinary.Shared.Entities.ServiceType", "ServiceTypes")
+                        .WithMany("Histories")
+                        .HasForeignKey("ServiceTypesId");
 
                     b.Navigation("Pets");
 
-                    b.Navigation("ServiceType");
+                    b.Navigation("ServiceTypes");
                 });
 
             modelBuilder.Entity("Veterinary.Shared.Entities.Pet", b =>
                 {
-                    b.HasOne("Veterinary.Shared.Entities.Owner", "Owner")
+                    b.HasOne("Veterinary.Shared.Entities.Owner", "Owners")
                         .WithMany()
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("OwnersId");
 
-                    b.HasOne("Veterinary.Shared.Entities.PetType", "PetType")
+                    b.HasOne("Veterinary.Shared.Entities.PetType", "PetTypes")
                         .WithMany()
-                        .HasForeignKey("PetTypeId");
+                        .HasForeignKey("PetTypesId");
 
-                    b.Navigation("Owner");
+                    b.Navigation("Owners");
 
-                    b.Navigation("PetType");
+                    b.Navigation("PetTypes");
+                });
+
+            modelBuilder.Entity("Veterinary.Shared.Entities.Owner", b =>
+                {
+                    b.Navigation("Agendas");
                 });
 
             modelBuilder.Entity("Veterinary.Shared.Entities.Pet", b =>
                 {
-                    b.Navigation("History");
+                    b.Navigation("Agendas");
+
+                    b.Navigation("Histories");
+                });
+
+            modelBuilder.Entity("Veterinary.Shared.Entities.ServiceType", b =>
+                {
+                    b.Navigation("Histories");
                 });
 #pragma warning restore 612, 618
         }
