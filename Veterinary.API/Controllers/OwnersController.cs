@@ -23,7 +23,7 @@ namespace Veterinary.API.Controllers
 
             _context = context;
         }
-
+        [AllowAnonymous]
         // Método Get- LISTA
         [HttpGet]
         public async Task<ActionResult> Get()

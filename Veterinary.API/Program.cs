@@ -21,14 +21,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddIdentity<User, IdentityRole>(x =>
 {
-
+    x.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+    x.SignIn.RequireConfirmedEmail = true;
     x.User.RequireUniqueEmail = true;
     x.Password.RequireDigit = false;
-    x.Password.RequiredUniqueChars = 6;
-    x.Password.RequireUppercase = false;
+    x.Password.RequiredUniqueChars = 0;
     x.Password.RequireLowercase = false;
-
     x.Password.RequireNonAlphanumeric = false;
+    x.Password.RequireUppercase = false;
+    x.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    x.Lockout.MaxFailedAccessAttempts = 3;
+    x.Lockout.AllowedForNewUsers = true;
 
 
 
@@ -39,6 +42,7 @@ builder.Services.AddIdentity<User, IdentityRole>(x =>
 
 builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<IFileStorage, FileStorage>();
+builder.Services.AddScoped<IMailHelper, MailHelper>();
 
 builder.Services.AddTransient<SeedDb>();
 
